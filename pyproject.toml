@@ -1,0 +1,14 @@
+[project]
+name = "structlog-example"
+version = "0.1.0"
+description = "structlog example project with Django, Celery, Sentry"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django-structlog[celery]>=8.1.0",
+    "django>=5.1.1",
+    "structlog>=24.4.0",
+    "structlog-sentry>=2.1.0",
+    "sentry-sdk>=2.14.0",
+    "celery>=5.4.0",
+]
