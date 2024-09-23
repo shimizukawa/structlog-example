@@ -1,8 +1,13 @@
 # structlog-example
-structlog with Django, Celery, Sentry
+structlog を Django, Celery, Sentry で連携するデモアプリです。
 
+- 標準ライブラリのlogging経由でのログ出力は、structlogでフォーマットします。
+- structlog経由でのログ出力は、標準のloggingのフォーマッターを経由してstructlogでフォーマットします。
 
-## dependencies
+refs:
+- [Rendering Using structlog-based Formatters Within logging](https://www.structlog.org/en/latest/standard-library.html#rendering-using-structlog-based-formatters-within-logging)
+
+## 依存ライブラリ
 
 - structlog
 - django
@@ -19,7 +24,7 @@ $ . $HOME/.cargo/env
 $ uv sync
 ```
 
-## Run django
+## デモの実行
 
 ```
 $ source .venv/bin/activate
@@ -30,4 +35,4 @@ Password: <ENTER YOUR PASSWORD>
 (structlog-example) $ python manage.py runserver
 ```
 
-Then open http://127.0.0.1:8000/admin/ and login by `admin` with your password.
+起動したら、 http://127.0.0.1:8000/admin/ にアクセスして `admin` でログインできます。

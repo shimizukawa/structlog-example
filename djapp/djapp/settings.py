@@ -121,3 +121,33 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# LOGGING with structlog
+
+LOGGING_CONFIG = "djapp.log.dict_config"
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "structlog": {
+            # LOGGING_CONFIG で設定
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "structlog",
+            # "level": "INFO",  # ログレベルで制御できているか確認する時に有効化
+        },
+    },
+    "loggers": {
+        "": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+        },
+        # 検証用にDjango ORMのクエリログを出力
+        "django.db.backends": {
+            "level": "DEBUG",
+        },
+    },
+}
