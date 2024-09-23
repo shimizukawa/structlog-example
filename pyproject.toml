@@ -12,3 +12,15 @@ dependencies = [
     "sentry-sdk>=2.14.0",
     "celery>=5.4.0",
 ]
+
+[tool.uv]
+dev-dependencies = [
+    "ruff>=0.6.7",
+]
+
+[tool.ruff]
+target-version = "py312"
+exclude = [
+    "migrations",
+]
+line-length = 100
