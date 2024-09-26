@@ -72,4 +72,3 @@ def dict_config(logging_settings):
     }
     logging.config.dictConfig(logging_settings)
     structlog.get_logger().debug("こんにちは structlog!")
-

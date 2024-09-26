@@ -51,6 +51,11 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/90/c4/6a4d3772e5407622feb93dd25c86ce3c0fee746fa822a777a627d56b4f2a/celery-5.4.0-py3-none-any.whl", hash = "sha256:369631eb580cf8c51a82721ec538684994f8277637edde2dfc0dacd73ed97f64", size = 425983 },
 ]
 
+[package.optional-dependencies]
+redis = [
+    { name = "redis" },
+]
+
 [[package]]
 name = "certifi"
 version = "2024.8.30"
@@ -212,6 +217,15 @@ wheels = [
 ]
 
 [[package]]
+name = "redis"
+version = "5.0.8"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/48/10/defc227d65ea9c2ff5244645870859865cba34da7373477c8376629746ec/redis-5.0.8.tar.gz", hash = "sha256:0c5b10d387568dfe0698c6fad6615750c24170e548ca2deac10c649d463e9870", size = 4595651 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c5/d1/19a9c76811757684a0f74adc25765c8a901d67f9f6472ac9d57c844a23c8/redis-5.0.8-py3-none-any.whl", hash = "sha256:56134ee08ea909106090934adc36f65c9bcbbaecea5b21ba704ba6fb561f8eb4", size = 255608 },
+]
+
+[[package]]
 name = "ruff"
 version = "0.6.7"
 source = { registry = "https://pypi.org/simple" }
@@ -281,7 +295,7 @@ name = "structlog-example"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "celery" },
+    { name = "celery", extra = ["redis"] },
     { name = "django" },
     { name = "django-structlog", extra = ["celery"] },
     { name = "sentry-sdk" },
@@ -296,7 +310,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "celery", specifier = ">=5.4.0" },
+    { name = "celery", extras = ["redis"], specifier = ">=5.4.0" },
     { name = "django", specifier = ">=5.1.1" },
     { name = "django-structlog", extras = ["celery"], specifier = ">=8.1.0" },
     { name = "sentry-sdk", specifier = ">=2.14.0" },

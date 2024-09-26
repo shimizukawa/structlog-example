@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-d@qr^v36$unlwm*$8nky&05@4cer6!gwdrt&$#7^+y^*lfs=7i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_structlog",
+    "app1.apps.App1Config",
 ]
 
 MIDDLEWARE = [
@@ -132,7 +133,8 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "structlog": {
-            # LOGGING_CONFIG で設定
+            # 以下は仮の設定。LOGGING_CONFIG で上書き設定されます。
+            'format': "%(levelname)s %(asctime)s %(name)s %(process)d %(thread)d %(message)s"
         },
     },
     "handlers": {
@@ -153,3 +155,10 @@ LOGGING = {
         },
     },
 }
+
+# Celery
+
+CELERY_TASK_ALWAYS_EAGER = True  # デモ用のため、同一プロセスで実行
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+# CELERY_RESULT_BACKEND = 'django-db'
