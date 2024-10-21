@@ -1,17 +1,14 @@
 # structlog-example
+This is a demo app that shows how to integrate structlog with Django, Celery, and Sentry.
 
-[README in English](./README-en.md)
-
-structlog を Django, Celery, Sentry で連携するデモアプリです。
-
-- 標準ライブラリのloggingにstructlogのフォーマッタを設定します。
-- 標準ライブラリのlogging経由でのログ出力は、structlogフォーマッタで整形します。
-- structlog経由でのログ出力は、標準のloggingに設定されたstructlogフォーマッターで整形します。
+- Set the structlog formatter for the standard logging library.
+- Logs created using the standard logging library are formatted with the structlog formatter.
+- Logs created through structlog are formatted using the structlog formatter set in the standard logging.
 
 refs:
 - [Rendering Using structlog-based Formatters Within logging](https://www.structlog.org/en/latest/standard-library.html#rendering-using-structlog-based-formatters-within-logging)
 
-## 依存ライブラリ
+## Dependencies
 
 - structlog
 - django
@@ -28,7 +25,7 @@ $ . $HOME/.cargo/env
 $ uv sync
 ```
 
-## デモの実行
+## Run demo
 
 ```
 $ docker compose up -d
@@ -40,21 +37,21 @@ Password: <ENTER YOUR PASSWORD>
 (structlog-example) $ python manage.py runserver
 ```
 
-起動したら、 http://127.0.0.1:8000/admin/ にアクセスして `admin` でログインできます。
+Once the application is running, you can access it at http://127.0.0.1:8000/admin/ and log in using the `admin` credentials.
 
-## stdlibとstructlogによるログ出力
+## Logging with stdlib and structlog
 
 ```
 2024-09-23T06:01:31.675294Z [debug    ] (0.000) SELECT ... [django.db.backends] filename=utils.py func_name=debug_sql lineno=151
 2024-09-23T06:01:31.678409Z [debug    ] こんにちは structlog!               [djapp.log] filename=log.py func_name=dict_config lineno=74
 ```
 
-## django-structlog の組み込み
+## Integrating django-structlog
 
-`INSTALLED_APPS` と `MIDDLEWARE` へ `django_structlog....` を追加すると、以下のようにログが変化します。
+By adding `django_structlog....` to `INSTALLED_APPS` and `MIDDLEWARE`, the logging will change as follows:
 
-- リクエスト開始時、終了時にログを出力
-- リクエスト処理中のログ出力に、コンテキスト情報 `request_id`, `user_id` の追加
+- Output logs when a request starts and ends.
+- Logs during request processing will include context information like request_id and user_id.
 
 ```
 2024-09-23T06:02:16.182528Z [info     ] request_started                [django_structlog.middlewares.request] filename=request.py func_name=prepare ip=127.0.0.1 lineno=161 request=GET /admin/ request_id=af3a4bb6-9ccd-4caa-aa66-0a470325cc99 user_agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 user_id=1
@@ -62,9 +59,9 @@ Password: <ENTER YOUR PASSWORD>
 2024-09-23T06:02:16.212872Z [info     ] request_finished               [django_structlog.middlewares.request] code=200 filename=request.py func_name=handle_response ip=127.0.0.1 lineno=109 request=GET /admin/ request_id=af3a4bb6-9ccd-4caa-aa66-0a470325cc99 user_id=1
 ```
 
-## Celeryの追加と django-structlog[celery] の組み込み
+## Adding Celery and Integrating django-structlog[celery]
 
-celeryのdebugログにもstructlogのレンダラでの整形が適用されていますが、メッセージに改行が含まれる場合（`chain` のあたり）はそのまま出力されています。これは、人間向けのコンソールレンダラでの出力によるものです。
+The structlog renderer is also applied to the debug logs of Celery. However, if the messages contain line breaks (around `chain`), they are output as is. This is due to the output from the console renderer designed for human readability.
 
 ```
 2024-09-23T07:05:37.100553Z [info     ] request_started                [django_structlog.middlewares.request] filename=request.py func_name=prepare ip=127.0.0.1 lineno=161 request=POST /admin/app1/value/6/change/ request_id=1725afad-b78d-4037-bfa9-a9bd63b9a4af user_agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 user_id=1
@@ -124,10 +121,10 @@ def backend_cleanup():
 [23/Sep/2024 07:05:37] "POST /admin/app1/value/6/change/ HTTP/1.1" 302 0
 ```
 
-同じ操作ログをJSONで出力すると以下の様になります。
-レンダラ切り替えは、 `djapp/log.py` で行っています。
+When the same operation logs are output in JSON output, it looks like the following.
+The renderer switch is handled in `djapp/log.py`.
 
-メッセージに改行が含まれる場合（`chain` のあたり）でも、ちゃんとJSONフォーマットの中に格納されていることが判ります。
+Even if the messages contain line breaks (around `chain`), you can see that they are properly stored within the JSON format.
 
 ```
 {"event": "(0.000) SELECT \"django_session\".\"session_key\", \"django_session\".\"session_data\", \"django_session\".\"expire_date\" FROM \"django_session\" WHERE (\"django_session\".\"expire_date\" > '2024-09-23 07:12:41.242868' AND \"django_session\".\"session_key\" = 'h3r177ov3g2evdwehgdxwgmghsy7oxbp') LIMIT 21; args=('2024-09-23 07:12:41.242868', 'h3r177ov3g2evdwehgdxwgmghsy7oxbp'); alias=default", "request_id": "36755c1f-84cb-43c1-b75f-88b4acd7e75e", "level": "debug", "logger": "django.db.backends", "timestamp": "2024-09-23T07:12:41.243997Z", "filename": "utils.py", "lineno": 151, "func_name": "debug_sql"}
